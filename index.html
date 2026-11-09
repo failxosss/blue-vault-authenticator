@@ -1,26 +1,65 @@
 <!doctype html>
 <html lang="cs">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#090d16"><meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101827">
 <title>Blue Vault Authenticator</title>
 <style>
-:root{color-scheme:dark;--bg:#090d16;--panel:#121a2a;--line:#263650;--blue:#5da9ff;--muted:#9eacc2}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#101d32,var(--bg) 45%);color:#f4f7ff;font:16px system-ui,-apple-system,sans-serif;min-height:100vh;padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}
-main{max-width:620px;margin:auto;padding:22px 0 40px}header{display:flex;align-items:center;gap:12px;margin-bottom:22px}header img{width:44px}h1{font-size:23px;margin:0}p{color:var(--muted)}.panel,.account{background:#121a2a;border:1px solid var(--line);border-radius:18px;padding:16px;margin:14px 0}
-button,.filebtn{border:0;border-radius:12px;padding:13px 16px;background:#2469b7;color:white;font-weight:650;font-size:15px;margin:4px 4px 4px 0}
-button.secondary,.filebtn.secondary{background:#26344b}button.danger{background:#803b49}input{width:100%;background:#080e19;color:white;border:1px solid var(--line);border-radius:10px;padding:13px;margin:6px 0 12px;font-size:16px}
-label{display:block;color:#cbd7e9;font-size:14px}.actions{display:flex;flex-wrap:wrap;gap:6px}.accounttop{display:flex;justify-content:space-between;align-items:center;gap:10px}.issuer{font-weight:700}.user{color:var(--muted);font-size:13px}.code{font: bold 32px ui-monospace,monospace;letter-spacing:5px;margin:14px 0 4px}.small{font-size:12px;color:var(--muted)}.hidden{display:none!important}#camera{width:100%;border-radius:12px;background:#000}a{color:var(--blue)}
-</style></head>
-<body><main>
-<header><img src="icon.svg"><div><h1>Blue Vault Authenticator</h1><div class="small">Tvoje kódy. Jen v tomto zařízení.</div></div></header>
-<section id="lock" class="panel"><h2>Odemknout trezor</h2><p>Trezor je šifrovaný heslem a uložený pouze v tomto zařízení.</p><label for="password">Hlavní heslo</label><input id="password" type="password" autocomplete="current-password" placeholder="Zadej silné heslo"><div class="actions"><button id="unlock">Odemknout / vytvořit trezor</button></div><p class="small">Zapamatuj si heslo. Bez něj nelze obnovit uložené kódy.</p></section>
-<section id="app" class="hidden">
-<div class="actions"><button id="scan">Skenovat QR kód</button><label class="filebtn secondary">Načíst QR z Fotek<input id="qrfile" type="file" accept="image/*" hidden></label><button class="secondary" id="manual">Přidat ručně</button><button class="secondary" id="backup">Export zálohy</button><label class="filebtn secondary">Import zálohy<input id="restore" type="file" accept="application/json" hidden></label></div>
-<div id="scanner" class="panel hidden"><video id="camera" playsinline></video><p class="small">Namiř kameru na QR kód otpauth://. <button class="danger" id="stop">Zavřít kameru</button></p></div>
-<div id="add" class="panel hidden"><h3>Přidat účet</h3><label>Název služby</label><input id="issuer" placeholder="Google"><label>Uživatelský účet</label><input id="account" placeholder="email@example.com"><label>Tajný klíč (Base32)</label><input id="secret" autocapitalize="characters" placeholder="JBSWY3DPEHPK3PXP"><div class="actions"><button id="save">Uložit účet</button><button class="secondary" id="cancel">Zrušit</button></div></div>
-<div id="accounts"></div>
-</section></main>
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script><script src="app.js"></script></body></html>
+*{box-sizing:border-box}body{margin:0;background:#0b1220;color:#f4f7fb;font:16px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif}
+main{max-width:620px;margin:auto;padding:24px 16px 48px}.brand{display:flex;gap:12px;align-items:center;margin:8px 0 22px}.logo{width:46px;height:46px;border-radius:15px;background:#19385e;display:grid;place-items:center;font-size:24px}h1{font-size:22px;margin:0}h2{font-size:17px;margin:0 0 12px}.muted{color:#9aabc2;font-size:13px;line-height:1.5}.panel,.account{background:#141f31;border:1px solid #293b55;border-radius:17px;padding:16px;margin:14px 0}input,button{font:inherit}input[type=text],input[type=password],input[type=file]{width:100%;padding:13px;border-radius:11px;border:1px solid #354966;background:#0c1728;color:#fff;margin:6px 0 11px}button,.filebtn{border:0;border-radius:11px;padding:12px 15px;background:#71b2ff;color:#081426;font-weight:700;cursor:pointer;text-align:center}.secondary{background:#30445f;color:#f1f6ff}.danger{background:#55313c;color:#ffe2e8}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}.account{display:flex;align-items:center;justify-content:space-between;gap:10px}.account strong{display:block}.account small{color:#9aabc2}.code{font:700 29px ui-monospace,monospace;letter-spacing:3px;margin-top:7px}.right{text-align:right}#status{min-height:18px;color:#a8ceff;font-size:13px;margin-top:8px}#reader{display:none;width:100%;border-radius:12px;margin-top:10px}#app[hidden]{display:none}hr{border:0;border-top:1px solid #293b55;margin:17px 0}footer{text-align:center;color:#8294ad;font-size:12px;margin-top:24px}
+</style>
+</head>
+<body>
+<main>
+<header class="brand"><div class="logo">🔐</div><div><h1>Blue Vault Authenticator</h1><div class="muted">Tvoje ověřovací kódy na jednom místě</div></div></header>
+<section class="panel">
+<h2 id="lockTitle">Odemknout / vytvořit trezor</h2>
+<input id="password" type="password" autocomplete="current-password" placeholder="Heslo trezoru (min. 8 znaků)">
+<button id="unlock">Odemknout trezor</button>
+<p class="muted">Při prvním spuštění nastav heslo. Trezor je šifrovaný přímo v tomto zařízení. Heslo si bezpečně zapamatuj – bez něj nelze data obnovit.</p>
+</section>
+<div id="app" hidden>
+<section class="panel">
+<h2>Přidat účet</h2>
+<input id="issuer" type="text" placeholder="Služba (např. Google)">
+<input id="accountName" type="text" placeholder="Účet / e-mail">
+<input id="secret" type="text" placeholder="Tajný klíč Base32">
+<div class="row"><button id="add">Přidat ručně</button><button class="secondary" id="scan">Skenovat QR</button></div>
+<label class="filebtn secondary" style="display:block;margin-top:8px">Vybrat QR obrázek z Fotek<input id="image" type="file" accept="image/*" hidden></label>
+<video id="reader" playsinline></video><div id="status"></div>
+</section>
+<div id="list"></div>
+<section class="panel">
+<h2>Záloha a zabezpečení</h2>
+<button class="secondary" id="backup">Stáhnout šifrovanou zálohu</button>
+<label class="filebtn secondary" style="display:block;margin-top:9px">Obnovit zálohu<input id="restore" type="file" accept="application/json" hidden></label>
+<hr><button class="danger" id="lock">Zamknout trezor</button>
+</section>
+</div>
+<footer>Blue Vault · Data se ukládají lokálně v tomto prohlížeči</footer>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script>
+const $=id=>document.getElementById(id), enc=new TextEncoder(), dec=new TextDecoder();
+let vaultKey=null, entries=[], tick=null, camera=null;
+const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b)));
+const un64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function derive(password,salt){const material=await crypto.subtle.importKey("raw",enc.encode(password),"PBKDF2",false,["deriveKey"]);return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:310000,hash:"SHA-256"},material,{name:"AES-GCM",length:256},false,["encrypt","decrypt"])}
+async function persist(){const iv=crypto.getRandomValues(new Uint8Array(12));const encrypted=await crypto.subtle.encrypt({name:"AES-GCM",iv},vaultKey,enc.encode(JSON.stringify(entries)));localStorage.setItem("bv_vault",JSON.stringify({iv:b64(iv),data:b64(encrypted)}))}
+async function unlock(){const password=$("password").value;if(password.length<8){$("status").textContent="Heslo musí mít alespoň 8 znaků.";return}try{let salt;if(!localStorage.getItem("bv_salt")){salt=crypto.getRandomValues(new Uint8Array(16));localStorage.setItem("bv_salt",b64(salt));vaultKey=await derive(password,salt);entries=[];await persist()}else{salt=un64(localStorage.getItem("bv_salt"));vaultKey=await derive(password,salt);const saved=localStorage.getItem("bv_vault");if(saved){const v=JSON.parse(saved);const plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:un64(v.iv)},vaultKey,un64(v.data));entries=JSON.parse(dec.decode(plain))}else entries=[]}$("app").hidden=false;$("password").value="";$("lockTitle").textContent="Trezor odemčen";$("status").textContent="";render()}catch(e){vaultKey=null;$("status").textContent="Nesprávné heslo nebo poškozený trezor."}}
+function decodeBase32(s){const alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";let bits="",out=[];for(const c of s.toUpperCase().replace(/[=\\s-]/g,"")){const n=alphabet.indexOf(c);if(n<0)throw Error("Tajný klíč není platný Base32.");bits+=n.toString(2).padStart(5,"0")}for(let i=0;i+8<=bits.length;i+=8)out.push(parseInt(bits.slice(i,i+8),2));if(!out.length)throw Error("Tajný klíč je prázdný.");return new Uint8Array(out)}
+async function makeCode(a){const counter=Math.floor(Date.now()/1000/(a.period||30));const buf=new ArrayBuffer(8),view=new DataView(buf);view.setUint32(4,counter);const hash=a.algorithm||"SHA-1";const cryptoKey=await crypto.subtle.importKey("raw",decodeBase32(a.secret),{name:"HMAC",hash},false,["sign"]);const h=new Uint8Array(await crypto.subtle.sign("HMAC",cryptoKey,buf));const offset=h[h.length-1]&15;const num=((h[offset]&127)<<24)|(h[offset+1]<<16)|(h[offset+2]<<8)|h[offset+3];const digits=a.digits||6;return String(num%10**digits).padStart(digits,"0")}
+async function render(){const list=$("list");list.replaceChildren();for(let i=0;i<entries.length;i++){const a=entries[i],el=document.createElement("section");el.className="account";const left=document.createElement("div"),right=document.createElement("div");left.innerHTML="<strong></strong><small></small><div class='code'>------</div>";left.querySelector("strong").textContent=a.issuer||"Účet";left.querySelector("small").textContent=a.account||"";const code=left.querySelector(".code");try{code.textContent=await makeCode(a)}catch(e){code.textContent="CHYBA"}const copy=document.createElement("button");copy.className="secondary";copy.textContent="Kopírovat";copy.onclick=()=>navigator.clipboard?.writeText(code.textContent);const del=document.createElement("button");del.className="danger";del.textContent="Smazat";del.onclick=async()=>{entries.splice(i,1);await persist();render()};right.className="right";right.append(copy,document.createElement("br"),del);el.append(left,right);list.append(el)}if(tick)clearInterval(tick);tick=setInterval(render,1000)}
+async function addUri(uri){const u=new URL(uri);if(u.protocol!=="otpauth:"||u.hostname!=="totp")throw Error("Toto není TOTP QR kód.");const q=u.searchParams,secret=q.get("secret");if(!secret)throw Error("QR neobsahuje tajný klíč.");const label=decodeURIComponent(u.pathname.replace(/^\\//,""));const parts=label.split(":");entries.push({issuer:q.get("issuer")||parts[0]||"Účet",account:parts.length>1?parts.slice(1).join(":"):label,secret,period:Number(q.get("period"))||30,digits:Number(q.get("digits"))||6,algorithm:(q.get("algorithm")||"SHA1").toUpperCase().replace("SHA1","SHA-1").replace("SHA256","SHA-256").replace("SHA512","SHA-512")});await persist();render();$("status").textContent="Účet byl přidán."}
+$("unlock").onclick=unlock;
+$("add").onclick=async()=>{try{const secret=$("secret").value.trim();decodeBase32(secret);entries.push({issuer:$("issuer").value.trim()||"Účet",account:$("accountName").value.trim(),secret,period:30,digits:6,algorithm:"SHA-1"});await persist();$("secret").value="";render();$("status").textContent="Účet byl přidán."}catch(e){$("status").textContent=e.message}};
+async function readQr(file){if(!window.jsQR)throw Error("QR knihovna se nenačetla. Zkontroluj internet.");const bmp=await createImageBitmap(file),canvas=document.createElement("canvas"),ctx=canvas.getContext("2d");canvas.width=bmp.width;canvas.height=bmp.height;ctx.drawImage(bmp,0,0);const d=ctx.getImageData(0,0,canvas.width,canvas.height),result=jsQR(d.data,d.width,d.height);if(!result)throw Error("Na obrázku nebyl nalezen QR kód.");await addUri(result.data)}
+$("image").onchange=async e=>{try{if(e.target.files[0])await readQr(e.target.files[0])}catch(err){$("status").textContent=err.message}e.target.value=""};
+function stopCamera(){if(camera)camera.getTracks().forEach(t=>t.stop());camera=null;$("reader").style.display="none"}
+$("scan").onclick=async()=>{try{if(!navigator.mediaDevices?.getUserMedia)throw Error("Kamera vyžaduje zabezpečené HTTPS připojení.");if(!window.jsQR)throw Error("QR knihovna se nenačetla. Zkontroluj internet.");camera=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}}});const video=$("reader");video.srcObject=camera;video.style.display="block";await video.play();const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d");const scan=()=>{if(!camera)return;if(video.readyState>=2){canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.drawImage(video,0,0);const d=ctx.getImageData(0,0,canvas.width,canvas.height),r=jsQR(d.data,d.width,d.height);if(r){stopCamera();addUri(r.data).catch(e=>$("status").textContent=e.message);return}}requestAnimationFrame(scan)};scan()}catch(e){stopCamera();$("status").textContent=e.message||"Kameru se nepodařilo spustit."}};
+$("lock").onclick=()=>{stopCamera();vaultKey=null;entries=[];$("app").hidden=true;$("lockTitle").textContent="Trezor zamčen";if(tick)clearInterval(tick)};
+$("backup").onclick=()=>{const data=JSON.stringify({version:1,salt:localStorage.getItem("bv_salt"),vault:localStorage.getItem("bv_vault")});const url=URL.createObjectURL(new Blob([data],{type:"application/json"}));const a=document.createElement("a");a.href=url;a.download="blue-vault-encrypted-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+$("restore").onchange=async e=>{try{const f=e.target.files[0];if(!f)return;const o=JSON.parse(await f.text());if(o.version!==1||!o.salt||!o.vault)throw Error();localStorage.setItem("bv_salt",o.salt);localStorage.setItem("bv_vault",o.vault);alert("Záloha nahrána. Zamkni trezor a odemkni ho heslem, kterým byla záloha vytvořena.")}catch(err){alert("Soubor zálohy není platný.")}e.target.value=""};
+</script>
+</body></html>
